@@ -61,6 +61,7 @@ s32 sceKernelStat_hook(char *path, struct stat* stat_buf)
         {
             debug_printf("old: %s\n", path);
             debug_printf("old stat: 0x%08x\n", ret);
+            debug_printf("failed: %s\n", possible_path);
             return ret;
         }
         else
@@ -109,7 +110,8 @@ s32 attr_public plugin_load(s32 argc, const char* argv[])
     boot_ver();
     struct proc_info procInfo;
     if (!sys_sdk_proc_info(&procInfo)) {
-        memcpy(titleid, procInfo.titleid, sizeof(titleid));
+        memcpy(titleid, procInfo.titleid, sizeof(titleid) - 1);
+        titleid[sizeof(titleid) - 1] = '\0';
         print_proc_info();
     }
     HOOK32(sceKernelOpen);
